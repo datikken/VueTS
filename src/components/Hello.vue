@@ -1,33 +1,63 @@
 <template>
   <div class="hello">
-    <h1>{{ message }}</h1>
+    <h1 v-colorDerictive="'black'">{{ getFullMessage() }}</h1>
+    <h1 v-colorDerictive="'black'">{{ msg }}</h1>
     <button @click="clicked">Click</button>
+    <router-link to="/hello-ts">
+      HelloTs
+    </router-link>
+     <router-link to="/">
+      Hello
+    </router-link>
   </div>
 </template>
 
 <script lang="ts">
-export default {
-  name: 'hello',
-  data () {
-    return {
-      message: 'Welcome to Your Vue.js App'
-    }
-  },
+import Vue from 'vue';
+import Component, { createDecorator } from 'vue-class-component';
+import colorDerictive from '../color-derictive';
+import { Prop } from 'vue-property-decorator'; 
 
-  computed: {
-    fullMessage(){
-      return `${this.message} from Typescript`;
-    }
-  },
+const Log = (msg?: string) => { return createDecorator((component, key) => {
+    console.log('Component: ', component);
+    console.log('Key: ', key);
+
+    console.log(msg);
+  })
+}
+
+class HelloComp extends Vue {
+  msg: string
+}
+
+@Component({
+  directives: {
+    colorDerictive
+  }
+})
+
+export default class Hello extends HelloComp {
+  message: string = 'Hello my near';
+  name: 'paco';
+
+  @Log('yooo')
+  @Prop() msg: string;
+  
+  getFullMessage() {
+    return `${this.message} ${this.msg}`
+  }
 
   created() {
     console.log('created');
-  },
+  }
 
-  methods: {
-    clicked(){
-      console.log('clicked');
-    }
+  clicked() {
+    console.log('clicked');
+  }
+
+  beforeRouteEnter(to, from, next) {
+    console.log('Enter')
+    next()
   }
 }
 </script>
